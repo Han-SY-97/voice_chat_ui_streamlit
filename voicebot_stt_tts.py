@@ -34,6 +34,19 @@ def main():
         )
 
         st.markdown("")
+                
+    system_content = "You are a thoughtful assistant. Respond to all input in 25 words and answer in korea"
+
+    # session state 초기화
+    if "chat" not in st.session_state:
+        st.session_state["chat"] = []
+
+    if "messages" not in st.session_state:
+        st.session_state["messages"] = [{"role": "system", "content": system_content}]
+    
+    if "check_reset" not in st.session_state:
+        st.session_state["check_reset"] = False
+
 
     # 사이드바 생성
     with st.sidebar:
@@ -43,9 +56,17 @@ def main():
 
         # 리셋 버튼 생성
         if st.button(label="초기화"):
-            pass
-
+            # 리셋 코드 
+            st.session_state["chat"] = []
+            st.session_state["messages"] = [{"role": "system", "content": system_content}]
+            st.session_state["check_reset"] = True
     
+   # 기능 구현 공간
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("질문하기")
+    with col2:
+        st.subheader("질문/답변")
 
 if __name__ == "__main__":
     # 실행함수
