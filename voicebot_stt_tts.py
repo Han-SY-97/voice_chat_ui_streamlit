@@ -35,7 +35,12 @@ def STT(speech):
 
     return transcription.text
 
-
+def ask_gpt(prompt, model):
+    response = client.chat.completions.create(
+        model=model,
+        messages=prompt
+    )
+    return response.choices[0].message.content
 
 # 메인 함수
 def main():
@@ -106,6 +111,17 @@ def main():
 
     with col2:
         st.subheader("질문/답변")
+        if (audio.duration_seconds > 0) and (st.session_state["check_reset"]==False):
+            # ChatGPT에게 답변 얻기
+            reponse = ask_gpt(st.session_state["messages"],model)
+            # GPT 모델에 넣을 프롬프트를 위해 답변 내용 저장
+            st.session_state["messages"] = st.session_state["messages"] + [{"role": "user", "content": question}]
+            # 채팅을 시각화하기 위해 질문 내용 저장
+            now = datetime.now().strftime("%H:%M")
+            st.session_state["chat"] = st.session_state["chat"] + [("bot", now, reponse)]
+
+        else:
+            st.session_state["check_reset"] = False
 
 if __name__ == "__main__":
     # 실행함수
